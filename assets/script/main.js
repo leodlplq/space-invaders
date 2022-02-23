@@ -1,1 +1,5 @@
-console.log("Hello World")
+
+import Game from "./Game.js"
+
+new Game("green");
+
