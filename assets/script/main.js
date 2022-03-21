@@ -1,6 +1,6 @@
 
 import Game from "./Game.js"
-import {pileOuFace, de, otherRand} from "./tools/random.js"
+import {pileOuFace, de, nonUniformRandom} from "./tools/random.js"
 
 //new Game("green");
 
@@ -13,7 +13,15 @@ document.querySelector("#de").addEventListener('click', ()=>{
 })
 
 document.querySelector("#other").addEventListener('click', ()=>{
-      console.log(otherRand());
+      let tab = [1,100,1]
+      let obj = {}
+      for(let i = 0; i < 100000; i++){
+            let index = nonUniformRandom(tab);
+            obj[index] == undefined ? obj[index] = 0 : obj[index] = obj[index]+1
+      }
+      console.log(tab)
+      console.log(obj)
+      // console.log(nonUniformRandom(tab));
 })
 
 
