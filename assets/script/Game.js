@@ -1,4 +1,5 @@
 import { debounce } from "./tools/debounce.js";
+import Player from "./Player.js"
 
 export default class Game{
     constructor(color){
@@ -8,6 +9,8 @@ export default class Game{
 
         this.width = window.innerWidth
         this.height = window.innerHeight
+
+        this.player = new Player(this.ctx)
 
         this.initEvent()
         this.draw()
@@ -20,14 +23,13 @@ export default class Game{
 
     draw(){
         console.log("dessine")
-        var gradient = this.ctx.createLinearGradient(0, 0, this.width, 0);
-        gradient.addColorStop(0, 'green');
-        gradient.addColorStop(1, 'red');
-        this.ctx.fillStyle = gradient;
+        // var gradient = this.ctx.createLinearGradient(0, 0, this.width, 0);
+        // gradient.addColorStop(0, 'green');
+        // gradient.addColorStop(1, 'red');
+        this.ctx.fillStyle = this.color;
         this.ctx.fillRect(0, 0,this.width, this.height)
 
-        this.ctx.fillStyle = "white";
-        this.ctx.fillRect(this.width - 100, this.height-100, 100, 100)
+        this.player.draw()
     }
 
     handleResizeWindow(){
@@ -41,6 +43,5 @@ export default class Game{
 
         this.draw()
     }
-
    
 }
