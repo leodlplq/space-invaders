@@ -6,7 +6,7 @@ function de(nbFace){
       return Math.ceil(Math.random()*nbFace)
 }
 
-function otherRand(){
+function sumRand(){
 
       let tab = [2,4,6,8,4,2,3,6,5,1,5,4,3];
 
@@ -31,4 +31,4 @@ function otherRand(){
 
 
 
-export {pileOuFace, de, otherRand}
+export {pileOuFace, de, sumRand}
