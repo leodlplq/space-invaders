@@ -8,6 +8,7 @@ export default class Player {
         }
 
         this.rotation = 0
+        this.opacity = 1
 
         const image = new Image()
         image.src = './assets/images/spaceship.png'
@@ -27,6 +28,7 @@ export default class Player {
         // this.ctx.fillStyle = 'red'
         // this.ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
         this.ctx.save()
+        this.ctx.globalAlpha = this.opacity
         this.ctx.translate(
             this.position.x + this.width / 2,
             this.position.y + this.height / 2

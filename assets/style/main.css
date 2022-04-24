@@ -1,15 +1,23 @@
-*{
+* {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-body{
+body {
     height: 100vh;
     overflow: hidden;
 }
 
-canvas{
-    
+canvas {
+}
+
+p {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    color: white;
+    z-index: 9999;
+    font-size: 14px;
 }

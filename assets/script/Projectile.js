@@ -26,6 +26,7 @@ class Projectile {
         this.draw()
         this.position.x += this.velocity.x
         this.position.y += this.velocity.y
+        this.opacity -= 0.1
     }
 }
 
@@ -41,7 +42,7 @@ class InvaderProjectile {
     }
 
     draw() {
-        this.ctx.fillStyle('white')
+        this.ctx.fillStyle = 'white'
         this.ctx.fillRect(
             this.position.x,
             this.position.y,
