@@ -1,4 +1,4 @@
-export default class Projectile {
+class Projectile {
     constructor({ position, velocity }, ctx) {
         this.position = position
         this.velocity = velocity
@@ -28,3 +28,33 @@ export default class Projectile {
         this.position.y += this.velocity.y
     }
 }
+
+class InvaderProjectile {
+    constructor({ position, velocity }, ctx) {
+        this.position = position
+        this.velocity = velocity
+
+        this.ctx = ctx
+
+        this.width = 3
+        this.height = 10
+    }
+
+    draw() {
+        this.ctx.fillStyle('white')
+        this.ctx.fillRect(
+            this.position.x,
+            this.position.y,
+            this.width,
+            this.height
+        )
+    }
+
+    update() {
+        this.draw()
+        this.position.x += this.velocity.x
+        this.position.y += this.velocity.y
+    }
+}
+
+export { Projectile, InvaderProjectile }
