@@ -6,9 +6,9 @@ function de(nbFace){
       return Math.ceil(Math.random()*nbFace)
 }
 
-function otherRand(){
+function nonUniformRandom(tab){
 
-      let tab = [2,4,6,8,4,2,3,6,5,1,5,4,3];
+      // let tab = [2,4,6,8,4,2,3,6,5,1,5,4,3];
 
       let total = tab.reduce((acc, cur)=>{
             return acc += cur
@@ -26,9 +26,9 @@ function otherRand(){
             totalP += tabDiv[indexP]
             indexP++
       }
-      return indexP;
+      return indexP-1;
 }
 
 
 
-export {pileOuFace, de, otherRand}
+export {pileOuFace, de, nonUniformRandom}

@@ -1,6 +1,8 @@
 
 import Game from "./Game.js"
+
 // import {pileOuFace, de, otherRand} from "./tools/random.js"
+
 
 new Game("black");
 
@@ -15,6 +17,7 @@ new Game("black");
 // document.querySelector("#other").addEventListener('click', ()=>{
 //       console.log(otherRand());
 // })
+
 
 
 
