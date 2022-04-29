@@ -1,8 +1,4 @@
-
-import Game from "./Game.js"
-// import {pileOuFace, de, otherRand} from "./tools/random.js"
-
-new Game("black");
+import {pileOuFace, bernouilli, rademacher, de, sumRand, loiExponentielle} from "./tools/random.js"
 
 // document.querySelector("#piece").addEventListener('click', ()=>{
 //       console.log(pileOuFace() ? "pile": "face");
@@ -16,8 +12,9 @@ new Game("black");
 //       console.log(otherRand());
 // })
 
-
-
-
-
-
+/* --------------- */
+/* --- RANDOMS --- */
+/* --------------- */
+for(let i=0; i<10; i++)console.log(loiExponentielle(1))
+for(let i=0; i<10; i++)console.log(pileOuFace(0.5))
+for(let i=0; i<10; i++)console.log(rademacher(0.5))
