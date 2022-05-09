@@ -34,6 +34,12 @@ const keys = {
     },
 }
 
+
+let frame = 0
+let randomInterval = Math.floor(Math.random() * 500) + 500
+let score = 0
+
+//SPACE BACKGROUND CREATE WITH PARTICLES
 const createStarsBackground = () => {
     for (let i = 0; i < 100; i++) {
         particles.push(
@@ -56,11 +62,7 @@ const createStarsBackground = () => {
     }
 }
 
-let frame = 0
-let randomInterval = Math.floor(Math.random() * 500) + 500
-let score = 0
 
-createStarsBackground()
 const animate = () => {
     if (!game.active) return
     requestAnimationFrame(animate)
@@ -68,12 +70,15 @@ const animate = () => {
     c.fillRect(0, 0, canvas.width, canvas.height)
     player.update()
 
+    
     particles.forEach((particle, index) => {
+        //PUT STAR BACKGROUND PARTICLES BACK TO TOP WHEN OUT OF SCREEN
         if (particle.position.y - particle.radius >= canvas.height) {
             particle.position.x = Math.random() * canvas.width
             particle.position.y = -particle.radius
         }
 
+        //DESTROY PARTICLE IF INVISIBLE
         if (particle.opacity <= 0) {
             setTimeout(() => {
                 particles.splice(index, 1)
@@ -120,6 +125,7 @@ const animate = () => {
         }
     })
 
+    //DISPLAY PROJECTILE OR DELETE THEM IF OUT OF VIEW
     projectiles.forEach((p, index) => {
         if (p.position.y + p.radius <= 0) {
             setTimeout(() => {
@@ -130,6 +136,7 @@ const animate = () => {
         }
     })
 
+    //DISPLAYING ENNEMIES
     grids.forEach((grid, gridIndex) => {
         grid.update()
         if (frame % 100 === 0 && grid.invaders.length > 0) {
@@ -191,6 +198,7 @@ const animate = () => {
         })
     })
 
+    //PLAYER'S MOVEMENT
     if (keys.q.pressed && player.position.x >= 0) {
         player.velocity.x = -speed
         player.rotation = -0.15
@@ -215,8 +223,11 @@ const animate = () => {
     frame++
 }
 
+createStarsBackground()
 animate()
 
+
+//EVENT LISTENER FOR KEYDOWN (PLAYER MOVEMENTS + SHOOTING)
 addEventListener('keydown', ({ key }) => {
     console.log(game.over)
     if (!game.over) {
@@ -251,6 +262,7 @@ addEventListener('keydown', ({ key }) => {
     }
 })
 
+//KEY IS NOT PRESSED ANYMORE
 addEventListener('keyup', ({ key }) => {
     switch (key) {
         case 'q':
@@ -267,6 +279,7 @@ addEventListener('keyup', ({ key }) => {
     }
 })
 
+//PARTICLES WHEN KILLING ENNEMIES OR PLAYER DYING
 const createParticles = ({ object, color, fades }) => {
     for (let i = 0; i < 15; i++) {
         particles.push(
@@ -289,3 +302,5 @@ const createParticles = ({ object, color, fades }) => {
         )
     }
 }
+
+
