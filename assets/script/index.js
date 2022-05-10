@@ -7,6 +7,7 @@ const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
 const _score = document.querySelector('#score')
+const _ammunition = document.querySelector("#ammunition")
 
 canvas.width = innerWidth
 canvas.height = innerHeight
@@ -36,7 +37,8 @@ const keys = {
 
 
 let frame = 0
-let randomInterval = Math.floor(Math.random() * 500) + 500
+let randomInterval = Math.floor(Math.random() * 500) + 1000
+let randomIntervalBullet = Math.floor(Math.random() * 500) + 200
 let score = 0
 
 //SPACE BACKGROUND CREATE WITH PARTICLES
@@ -70,7 +72,7 @@ const animate = () => {
     c.fillRect(0, 0, canvas.width, canvas.height)
     player.update()
 
-    
+    _ammunition.innerHTML = player.ammunition
     particles.forEach((particle, index) => {
         //PUT STAR BACKGROUND PARTICLES BACK TO TOP WHEN OUT OF SCREEN
         if (particle.position.y - particle.radius >= canvas.height) {
@@ -108,15 +110,15 @@ const animate = () => {
                 player.position.x &&
             invaderProjectile.position.x <= player.width + player.position.x
         ) {
-            setTimeout(() => {
-                invaderProjectiles.splice(index, 1)
-                player.opacity = 0
-                game.over = true
-            }, 0)
+            // setTimeout(() => {
+            //     invaderProjectiles.splice(index, 1)
+            //     player.opacity = 0
+            //     game.over = true
+            // }, 0)
 
-            setTimeout(() => {
-                game.active = false
-            }, 2000)
+            // setTimeout(() => {
+            //     game.active = false
+            // }, 2000)
             createParticles({
                 object: player,
                 color: 'white',
@@ -216,7 +218,13 @@ const animate = () => {
     //spawing ennemies
     if (frame % randomInterval === 0) {
         grids.push(new Grid(c, canvas))
-        randomInterval = Math.floor(Math.random() * 500) + 500
+        randomInterval = Math.floor(Math.random() * 500) + 1000
+    }
+
+    //giving bullets
+    if(frame % randomIntervalBullet === 0){
+        player.ammunition += Math.floor(Math.random() * 20) + 10 
+        randomIntervalBullet = Math.floor(Math.random() * 500) + 200
     }
 
     //spawn projectiles
@@ -229,7 +237,6 @@ animate()
 
 //EVENT LISTENER FOR KEYDOWN (PLAYER MOVEMENTS + SHOOTING)
 addEventListener('keydown', ({ key }) => {
-    console.log(game.over)
     if (!game.over) {
         switch (key) {
             case 'q':
@@ -239,21 +246,26 @@ addEventListener('keydown', ({ key }) => {
                 keys.d.pressed = true
                 break
             case ' ':
-                projectiles.push(
-                    new Projectile(
-                        {
-                            position: {
-                                x: player.position.x + player.width / 2,
-                                y: player.position.y,
+                if(player.ammunition > 0){
+                    projectiles.push(
+                        new Projectile(
+                            {
+                                position: {
+                                    x: player.position.x + player.width / 2,
+                                    y: player.position.y,
+                                },
+                                velocity: {
+                                    x: 0,
+                                    y: -7,
+                                },
                             },
-                            velocity: {
-                                x: 0,
-                                y: -7,
-                            },
-                        },
-                        c
+                            c
+                        )
                     )
-                )
+
+                    player.ammunition--
+                }
+                
                 break
 
             default:

@@ -9,6 +9,7 @@ export default class Player {
 
         this.rotation = 0
         this.opacity = 1
+        this.ammunition = 100;
 
         const image = new Image()
         image.src = './assets/images/spaceship.png'
