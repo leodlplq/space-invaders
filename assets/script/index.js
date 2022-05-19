@@ -108,15 +108,15 @@ const animate = () => {
                 player.position.x &&
             invaderProjectile.position.x <= player.width + player.position.x
         ) {
-            setTimeout(() => {
-                invaderProjectiles.splice(index, 1)
-                player.opacity = 0
-                game.over = true
-            }, 0)
+            // setTimeout(() => {
+            //     invaderProjectiles.splice(index, 1)
+            //     player.opacity = 0
+            //     game.over = true
+            // }, 0)
 
-            setTimeout(() => {
-                game.active = false
-            }, 2000)
+            // setTimeout(() => {
+            //     game.active = false
+            // }, 2000)
             createParticles({
                 object: player,
                 color: 'white',

@@ -1,4 +1,5 @@
 import { InvaderProjectile } from './Projectile.js'
+import { diceBetween } from './tools/random.js'
 
 class Invader {
     constructor(ctx, canvas, { position }) {
@@ -64,10 +65,19 @@ class Invader {
 class Grid {
     constructor(ctx, canvas) {
         this.canvas = canvas
+        
+        //Random grid size
+        const rows = diceBetween(2,7)
+        const cols = diceBetween(5,15)
+
+        this.width = cols * 30
+
+        //Random grid starting position
         this.position = {
-            x: 0,
+            x: Math.random() * (this.canvas.width - this.width),
             y: 0,
         }
+        console.log(this.position.x)
 
         this.velocity = {
             x: 3,
@@ -75,18 +85,14 @@ class Grid {
         }
 
         this.invaders = []
-
-        const rows = Math.floor(Math.random() * 5 + 2) //TODO: a changer plus tard
-        const cols = Math.floor(Math.random() * 10 + 5)
-
-        this.width = cols * 30
+        
         for (let x = 0; x < cols; x++) {
             for (let y = 0; y < rows; y++) {
                 this.invaders.push(
                     new Invader(ctx, canvas, {
                         position: {
-                            x: x * 30,
-                            y: y * 30,
+                            x: this.position.x + (x * 30),
+                            y: this.position.y + (y * 30),
                         },
                     })
                 )
