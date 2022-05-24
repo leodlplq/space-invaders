@@ -1,11 +1,11 @@
-import { loiUniformeAB } from "./tools/random.js"
+import { loiUniformeAB, loiBetaDecentree, loiExponentielle } from "./tools/random.js"
 
 export default class Boost{
     constructor(ctx, canvas,player, imageSrc, effect) {
         this.ctx = ctx
         this.position = {
-            x: canvas.width / 2,
-            y: Math.random() * 200 + 400,
+            x: loiBetaDecentree(2,2, canvas.width-300 , canvas.width/2),
+            y: loiUniformeAB(400,600)
         }
 
         this.velocity = {
@@ -27,6 +27,8 @@ export default class Boost{
         }
         this.player = player
         this.lifetime = 0;
+        this.death = loiExponentielle(0.4)*100
+
         this.effect = effect;
     }
 

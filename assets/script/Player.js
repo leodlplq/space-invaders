@@ -31,10 +31,6 @@ export default class Player {
     }
 
     draw() {
-        if(this.shield){
-            this.ctx.fillStyle = 'red'
-            this.ctx.fillRect(this.position.x, this.position.y, this.width, this.height + 10)
-        }
         this.ctx.save()
         this.ctx.globalAlpha = this.opacity
         this.ctx.translate(
@@ -46,7 +42,10 @@ export default class Player {
             -this.position.x - this.width / 2,
             -this.position.y - this.height / 2
         )
-
+        if(this.shield){
+            this.ctx.fillStyle = 'red'
+            this.ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+        }
         this.ctx.drawImage(
             this.image,
             this.position.x,

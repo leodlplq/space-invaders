@@ -5,7 +5,7 @@ import Player from './Player.js'
 import { Projectile, InvaderProjectile } from './Projectile.js'
 import Boost from './Boost.js'
 import { boostEffect } from './options/boostEffects.js'
-import {loiGaussienneDecentree} from './tools/random.js'
+import {loiGaussienneDecentree, sumRand, loiBetaDecentree} from './tools/random.js'
 
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
@@ -47,6 +47,9 @@ const keys = {
 let frame = 0
 let randomInterval = Math.floor(Math.random() * 500) + 1000
 let randomIntervalBullet = Math.floor(Math.random() * 500) + 200
+let randomIntervalBoost
+getRandomIntervalBoost()
+let frameBoost = 0
 let score = 0
 
 let frameWave = 0
@@ -299,7 +302,7 @@ const animate = () => {
                 }, 0)
             }
         })
-       if(boost.lifetime > 300){
+       if(boost.lifetime > boost.death){
             boosts.splice(boostIndex, 1)
         }
     })
@@ -404,8 +407,10 @@ const animate = () => {
     }
 
     //spawning boost
-    if(frame % 500 === 0 && frame != 0){
+    if(frameBoost > randomIntervalBoost){
         createRandomEffect()
+        getRandomIntervalBoost()
+        frameBoost=0
     }
 
     //spawning Boss
@@ -423,6 +428,7 @@ const animate = () => {
 
     frame++
     frameWave++
+    frameBoost++
 }
 
 createStarsBackground()
@@ -499,7 +505,7 @@ const createParticles = ({ object, color, fades }) => {
 }
 
 const createRandomEffect = () => {
-    let random = Math.floor(Math.random() * boostEffect.length)
+    let random = sumRand([20,1,3])
     boosts.push(new Boost(c, canvas,player, boostEffect[random].src, boostEffect[random].effect ))
 }
 
@@ -526,7 +532,10 @@ const shoot = ()=>{
 
 function createTimeBoss() {
     return Math.round(loiGaussienneDecentree(300,2000, 1500, 2500))
-    // return Math.round(loiGaussienneDecentree(10,200, 100, 300))
+}
+
+function getRandomIntervalBoost() {
+    randomIntervalBoost = loiBetaDecentree(5,2,300,450)
 }
 
 function InitNewWave() {
