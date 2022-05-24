@@ -19,6 +19,7 @@ let game = {
     active: true,
 }
 
+
 const player = new Player(c, canvas)
 const projectiles = []
 const grids = []
@@ -66,6 +67,8 @@ const createStarsBackground = () => {
         )
     }
 }
+
+
 
 
 const animate = () => {
@@ -161,9 +164,9 @@ const animate = () => {
     grids.forEach((grid, gridIndex) => {
         grid.update()
         if (frame % 100 === 0 && grid.invaders.length > 0) {
-            grid.invaders[
-                Math.floor(Math.random() * grid.invaders.length)
-            ].shoot(invaderProjectiles)
+            // grid.invaders[
+            //     Math.floor(Math.random() * grid.invaders.length)
+            // ].shoot(invaderProjectiles)
         }
         grid.invaders.forEach((invader, i) => {
             invader.update({ velocity: grid.velocity })
@@ -250,7 +253,12 @@ const animate = () => {
                 }, 0)
             }
         })
+
+        if(boost.lifetime > 300){
+            boosts.splice(boostIndex, 1)
+        }
     })
+    
 
 
     //RAPID FIRE
@@ -285,6 +293,11 @@ const animate = () => {
     if(frame % randomIntervalBullet === 0){
         player.ammunition += Math.floor(Math.random() * 20) + 10 
         randomIntervalBullet = Math.floor(Math.random() * 500) + 200
+    }
+
+    //spawning boost
+    if(frame % 500 === 0 && frame != 0){
+        createRandomEffect()
     }
 
     //spawn projectiles

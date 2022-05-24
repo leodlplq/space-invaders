@@ -1,8 +1,10 @@
+import { loiUniformeAB } from "./tools/random.js"
+
 export default class Boost{
     constructor(ctx, canvas,player, imageSrc, effect) {
         this.ctx = ctx
         this.position = {
-            x: Math.random() * 200 + 500,
+            x: canvas.width / 2,
             y: Math.random() * 200 + 400,
         }
 
@@ -24,7 +26,7 @@ export default class Boost{
             
         }
         this.player = player
-
+        this.lifetime = 0;
         this.effect = effect;
     }
 
@@ -54,6 +56,7 @@ export default class Boost{
             this.draw()
             this.position.x += this.velocity.x
             this.position.y += this.velocity.y
+            this.lifetime++
         }
     }
 }
