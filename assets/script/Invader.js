@@ -61,12 +61,14 @@ class Invader {
 }
 
 class Grid {
-    constructor(ctx, canvas) {
+    constructor(ctx, canvas, {
+        minRow, maxRow, minCol, maxCol
+        }) {
         this.canvas = canvas
         
         //Random grid size
-        const rows = diceBetween(2,7)
-        const cols = diceBetween(5,15)
+        const rows = diceBetween(minRow,maxRow)
+        const cols = diceBetween(minCol,maxCol)
 
         this.numberEnnemy = rows * cols
 

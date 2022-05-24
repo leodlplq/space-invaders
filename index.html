@@ -11,9 +11,157 @@
         <link rel="stylesheet" href="./assets/style/main.css" />
     </head>
     <body>
-        <p class="scoreP"><span>Score : </span><span id="score">0</span></p>
-        <p class="ammunitionDisplay"><span>Ammunition : </span><span id="ammunition">0</span></p>
+        <div class="game">
+        
+            <p class="scoreP"><span>Score : </span><span id="score">0</span></p>
+            <p class="ammunitionDisplay"><span>Ammunition : </span><span id="ammunition">0</span></p>
 
+            
+            <canvas width="1920" height="1080"></canvas>
+        </div>
+        <div class="menu">
+            <div class="main-menu">
+                <div class="title">
+                    <h1>SPACE INVADERS</h1>
+                    <span>Jeu créé par Estelle THOUVENIN et Léo DELPLANQUE</span>
+                </div>
+                <div class="btn-container">
+                    <button class="btn-menu launch">LANCER LE JEU</button>
+                    <button class="btn-menu params">PARAMETRES</button>
+                </div>
+            </div>
+
+            <div class="params-menu">
+                <h1>Changez les paramètres de la partie à jouer</h1>
+                <div class="params-elements">
+                    <div class="params-el">
+                        <h3>Nombre d'ennemis</h3>
+                        <div class="ranges">
+                            <div>
+                                <label for="minRow">Minimum de lignes</label>
+                                <div>
+                                    <input type="range" name="minRow" id="minRow" min="1" max="10" value="2">
+                                    <span id="minRowValue">2</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="maxRow">Maximum de lignes</label>
+                                <div>
+                                    <input type="range" name="maxRow" id="maxRow" min="1" max="10" value="7">
+                                    <span id="maxRowValue">7</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="minCol">Minimum de colonnes</label>
+                                <div>
+                                    <input type="range" name="minCol" id="minCol" min="1" max="10" value="5">
+                                    <span id="minColValue">5</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="maxCol">Maximum de colonnes</label>
+                                <div>
+                                    <input type="range" name="maxCol" id="maxCol" min="1" max="20" value="15">
+                                    <span id="maxColValue">15</span>
+                                </div>
+                            </div>
+                            
+                            
+                            
+                        </div>
+                    </div>
+                    <div class="params-el">
+                        <h3>Moment d’apparition des boosts</h3>
+                        <div class="ranges">
+                            <div>
+                                <label for="alpha">Alpha (&#945;)</label>
+                                <div>
+                                    <input type="range" name="alpha" id="alpha" min="1" max="10" value="5">
+                                    <span id="alphaValue">5</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="beta">Beta (&#946;)</label>
+                                <div>
+                                    <input type="range" name="beta" id="beta" min="1" max="10" value="2">
+                                    <span id="betaValue">2</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="centre">Centre</label>
+                                <div>
+                                    <input type="range" name="centre" id="centre" min="10" max="800" value="450">
+                                    <span id="centreValue">450</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="etendu">Etendu</label>
+                                <div>
+                                    <input type="range" name="etendu" id="etendu" min="10" max="800" value="300">
+                                    <span id="etenduValue">300</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="params-el">
+                        <h3>Type de boost</h3>
+                        <div class="ranges">
+                            <div>
+                                <input type="radio" name="boost" id="boost-facile" value="boost-facile">
+                                <label for="boost-facile">Facile</label>
+                            </div>
+                            <div>
+                                <input type="radio" name="boost" id="boost-mid" value="boost-mid" checked>
+                                <label for="boost-mid">Moyen</label>
+                            </div>
+                            <div>
+                                <input type="radio" name="boost" id="boost-hard" value="boost-hard">
+                                <label for="boost-hard">Difficile</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="params-el">
+                        <h3>Durée des boosts</h3>
+                        <div class="ranges">
+                            <div>
+                                <label for="lambda">Lambda (&#955;)</label>
+                                <div>
+                                    <input type="range" name="lambda" id="lambda" min="0.2" max="3" value="0.5" step="0.01">
+                                    <span id="lambdaValue">0.5</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="expoMin">Durée minimum</label>
+                                <div>
+                                    <input type="range" name="expoMin" id="expoMin" min="10" max="800" value="100">
+                                    <span id="expoMinValue">100</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="params-el">
+                        <h3>Nombre de PV des bosses</h3>
+                        <div class="ranges">
+                            <div>
+                                <label for="binomialeN">Paramètres N de la binomiale</label>
+                                <div>
+                                    <input type="range" name="binomialeN" id="binomialeN" min="1" max="1000" value="400" step="1">
+                                    <span id="binomialeNValue">400</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="binomProba">Probabilité de l'évènement</label>
+                                <div>
+                                    <input type="range" name="binomProba" id="binomProba" min="0" max="1" value="0.5" step="0.01">
+                                    <span id="binomProbaValue">0.5</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-menu goback">Retour au menu</button>
+            </div>
+        </div>
 
         
         <div id="stats">
@@ -53,7 +201,6 @@
             
         </div>
 
-        <canvas width="1920" height="1080"></canvas>
         <script type="module" src="./assets/script/index.js"></script>
         <!-- <script type="module" src="./assets/script/testsRandom.js"></script> -->
     </body>

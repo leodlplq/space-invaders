@@ -98,8 +98,38 @@ canvas.height = innerHeight
 
 let game = {
     over: false,
-    active: true,
+    active: false,
 }
+
+/** PARAMS */
+
+let paramsNbEnemy = {
+    minRow:2,
+    maxRow:7,
+    minCol:5,
+    maxCol:15
+}
+
+let paramsMomentBoost = {
+    alpha: 5,
+    beta: 2, 
+    etendu: 300,
+    centre: 450
+}
+
+let paramsBoost = [20,1,3]
+
+let paramsExpo = {
+    lambda:0.5,
+    min:100
+}
+
+let paramsBinomiale = {
+    n: 400,
+    p:0.5
+}
+
+/** END PARAMS */
 
 
 const player = new Player(c, canvas)
@@ -492,7 +522,7 @@ const animate = () => {
 
     //spawing ennemies
     if (frameWave % randomInterval === 0 && !bossPhase) {
-        grids.push(new Grid(c, canvas))
+        grids.push(new Grid(c, canvas, paramsNbEnemy))
         randomInterval = Math.floor(Math.random() * 500) + 1000
 
         dataStats.nbEnnemyGrid.push(grids[grids.length-1].numberEnnemy)
@@ -514,24 +544,33 @@ const animate = () => {
     //spawning Boss
     if (frameWave % timeApparitionBoss === 0 && frameWave!=0 && !bossPhase) {
         bossPhase = true;
-        // console.log('C\'EST CENSE ETRE LE BOSS')
+        console.log('C\'EST CENSE ETRE LE BOSS')
         annonceBoss()
     }
     if(bossPhase && grids.length == 0 && bossActive == false) {
-        boss = new Boss(c, canvas)
+
+        boss = new Boss(c, canvas, paramsBinomiale)
+
         // console.log('LE BOSSS')
         dataStats.bossPV.push(boss.pv)
         dataStats.bossApparition.push(timeApparitionBoss)
+
         bossActive = true
     }
+
+    if(boss) console.log(boss.pv)
+
 
     frame++
     frameWave++
     frameBoost++
 }
 
-createStarsBackground()
-animate()
+const launchGame = ()=>{
+    console.log('PARAMS ENEMIES', paramsNbEnemy)
+    createStarsBackground()
+    animate()
+}
 
 
 //EVENT LISTENER FOR KEYDOWN (PLAYER MOVEMENTS + SHOOTING)
@@ -604,10 +643,13 @@ const createParticles = ({ object, color, fades }) => {
 }
 
 const createRandomEffect = () => {
-    let random = sumRand([20,1,3])
-    boosts.push(new Boost(c, canvas,player, boostEffect[random].src, boostEffect[random].effect ))
+
+    let random = sumRand(paramsBoost)
+    boosts.push(new Boost(c, canvas,player, boostEffect[random].src, boostEffect[random].effect, paramsBoost ))
+
 
     dataStats.boost[boostEffect[random].name]++
+
 }
 
 const shoot = ()=>{
@@ -636,7 +678,12 @@ function createTimeBoss() {
 }
 
 function getRandomIntervalBoost() {
-    randomIntervalBoost = loiBetaDecentree(5,2,300,450)
+    randomIntervalBoost = loiBetaDecentree(
+                                    paramsMomentBoost.alpha,
+                                    paramsMomentBoost.beta,
+                                    paramsMomentBoost.etendu,
+                                    paramsMomentBoost.centre
+                                    )
 }
 
 function InitNewWave() {
@@ -653,3 +700,143 @@ function annonceBoss() {
     backgroundColor = 'rgb(82, 24, 17)'
     setTimeout(() => {backgroundColor = 'black'}, 1000);
 }
+
+
+const _game = document.querySelector('.game')
+
+/* MENU PART */
+const _menu = document.querySelector('.menu')
+const _mainMenu = document.querySelector('.main-menu')
+const _paramsMenu = document.querySelector('.params-menu')
+const _launchGameBtn = document.querySelector('.launch')
+const _paramsBtn = document.querySelector('.params')
+
+const _gobackBtn = document.querySelector('.goback')
+
+_launchGameBtn.addEventListener('click', (e)=>{
+    e.preventDefault()
+    _menu.style.display = "none"
+    _game.style.display = 'block'
+    game.active = true
+    launchGame()
+})
+
+_paramsBtn.addEventListener('click', (e)=>{
+    e.preventDefault()
+    _mainMenu.style.display = 'none'
+    _paramsMenu.style.display = 'flex'
+})
+
+_gobackBtn.addEventListener('click', (e)=>{
+    e.preventDefault()
+    _mainMenu.style.display = 'flex'
+    _paramsMenu.style.display = 'none'
+})
+
+/** PARAMS PART */
+/** PARAMS : NB ENNEMIS */
+const _minRowRange = document.querySelector('#minRow')
+const _minRowRangeValue = document.querySelector('#minRowValue')
+const _maxRowRange = document.querySelector('#maxRow')
+const _maxRowRangeValue = document.querySelector('#maxRowValue')
+const _minColRange = document.querySelector('#minCol')
+const _minColRangeValue = document.querySelector('#minColValue')
+const _maxColRange = document.querySelector('#maxCol')
+const _maxColRangeValue = document.querySelector('#maxColValue')
+
+_minRowRange.addEventListener('input', (e)=>{
+    _minRowRangeValue.innerHTML = e.target.value
+    paramsNbEnemy.minRow = parseInt(e.target.value)
+})
+_maxRowRange.addEventListener('input', (e)=>{
+    _maxRowRangeValue.innerHTML = e.target.value
+    paramsNbEnemy.maxRow = parseInt(e.target.value)
+})
+_minColRange.addEventListener('input', (e)=>{
+    _minColRangeValue.innerHTML = e.target.value
+    paramsNbEnemy.minCol = parseInt(e.target.value)
+})
+_maxColRange.addEventListener('input', (e)=>{
+    _maxColRangeValue.innerHTML = e.target.value
+    paramsNbEnemy.maxCol = parseInt(e.target.value)
+})
+
+/** PARAMS : MOMENT APPARITION BOOST */
+const _alpha = document.querySelector('#alpha')
+const _alphaValue = document.querySelector('#alphaValue')
+const _beta = document.querySelector('#beta')
+const _betaValue = document.querySelector('#betaValue')
+const _centre = document.querySelector('#centre')
+const _centreValue = document.querySelector('#centreValue')
+const _etendu = document.querySelector('#etendu')
+const _etenduValue = document.querySelector('#etenduValue')
+
+_alpha.addEventListener('input', (e)=>{
+    _alphaValue.innerHTML = e.target.value
+    paramsMomentBoost.alpha = parseInt(e.target.value)
+})
+_beta.addEventListener('input', (e)=>{
+    _betaValue.innerHTML = e.target.value
+    paramsMomentBoost.beta = parseInt(e.target.value)
+})
+_centre.addEventListener('input', (e)=>{
+    _centreValue.innerHTML = e.target.value
+    paramsMomentBoost.centre = parseInt(e.target.value)
+})
+_etendu.addEventListener('input', (e)=>{
+    _etenduValue.innerHTML = e.target.value
+    paramsMomentBoost.etendu = parseInt(e.target.value)
+})
+
+/**PARAMS TYPE BOOST */
+const _inputBoost = document.querySelectorAll('input[name="boost"]')
+_inputBoost.forEach(input=>{
+    input.addEventListener('input', (e)=>{
+        switch (e.target.value) {
+            case "boost-facile":
+                    paramsBoost = [1,1,1]
+                break;
+
+            case "boost-mid":
+                    paramsBoost = [20,1,3]
+                break;
+            case "boost-hard":
+                    paramsBoost = [50,1,1]
+                break;
+        
+            default:
+                break;
+        }
+    })
+})
+
+/** PARAMS DUREE BOOST */
+const _lambda = document.querySelector('#lambda')
+const _lambdaValue = document.querySelector('#lambdaValue')
+const _expoMin = document.querySelector('#expoMin')
+const _expoMinValue = document.querySelector('#expoMinValue')
+_lambda.addEventListener('input', (e)=>{
+    _lambdaValue.innerHTML = e.target.value
+    paramsExpo.lambda = parseInt(e.target.value)
+})
+_expoMin.addEventListener('input', (e)=>{
+    _expoMinValue.innerHTML = e.target.value
+    paramsExpo.min = parseInt(e.target.min)
+})
+
+/**PARAMS NOMBRE PV BOSS */
+const _binomialeN = document.querySelector('#binomialeN')
+const _binomialeNValue = document.querySelector('#binomialeNValue')
+const _binomProba = document.querySelector('#binomProba')
+const _binomProbaValue = document.querySelector('#binomProbaValue')
+_binomialeN.addEventListener('input', (e)=>{
+    _binomialeNValue.innerHTML = e.target.value
+    paramsBinomiale.n = parseInt(e.target.value)
+
+})
+
+_binomProba.addEventListener('input', (e)=>{
+    _binomProbaValue.innerHTML = e.target.value
+    paramsBinomiale.p = parseInt(e.target.value)
+    
+})
