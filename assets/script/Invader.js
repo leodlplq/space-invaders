@@ -68,6 +68,8 @@ class Grid {
         const rows = diceBetween(2,7)
         const cols = diceBetween(5,15)
 
+        this.numberEnnemy = rows * cols
+
         this.width = cols * 30
 
         //Random grid starting position

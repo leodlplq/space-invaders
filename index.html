@@ -14,12 +14,47 @@
         <p class="scoreP"><span>Score : </span><span id="score">0</span></p>
         <p class="ammunitionDisplay"><span>Ammunition : </span><span id="ammunition">0</span></p>
 
-        <!-- <button id="piece">Pile ou face ?</button>
 
-    <button id="de">Dé à 6 faces</button>
-    <button id="other">Random inconnu</button> -->
+        
+        <div id="stats">
+            <h1>Quelques données statistiques</h1>
+            <div id="statsDetails">
+                <div>
+                    <h2>Type de boost</h2>
+                    <p><span>Écart moyen : </span><span id="ecartMoyen">0</span></p>
+                    <p><span>Écart-type  : </span><span id="ecartType">0</span></p>
+                </div>
+
+                <div>
+                    <h2>Nombre d'ennemis moyen dans une grille</h2>
+                    <p><span>Moyenne : </span><span id="moyenne">/</span></p>
+                    <p><span>Écart moyen : </span><span id="ecartMoyen">/</span></p>
+                    <p><span>Écart-type  : </span><span id="ecartType">/</span></p>
+                </div>
+
+                <div>
+                    <h2>Nombre de pv des Boss</h2>
+                    <p><span>Moyenne : </span><span id="moyenne">/</span></p>
+                    <p><span>Écart moyen : </span><span id="ecartMoyen">/</span></p>
+                    <p><span>Écart-type  : </span><span id="ecartType">/</span></p>
+                </div>
+
+                <div>
+                    <h2>Temps d'apparition du Boss</h2>
+                    <p><span>Moyenne : </span><span id="moyenne">/</span></p>
+                    <p><span>Écart moyen : </span><span id="ecartMoyen">/</span></p>
+                    <p><span>Écart-type  : </span><span id="ecartType">/</span></p>
+                </div>
+            </div>
+
+                <div class="retry-btn">
+                    <a href="./">Relancer le jeu</a>
+                </div>
+            
+        </div>
+
         <canvas width="1920" height="1080"></canvas>
         <script type="module" src="./assets/script/index.js"></script>
-        <script type="module" src="./assets/script/testsRandom.js"></script>
+        <!-- <script type="module" src="./assets/script/testsRandom.js"></script> -->
     </body>
 </html>
