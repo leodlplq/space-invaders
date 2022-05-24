@@ -7,6 +7,86 @@ import Boost from './Boost.js'
 import { boostEffect } from './options/boostEffects.js'
 import {loiGaussienneDecentree, sumRand, loiBetaDecentree} from './tools/random.js'
 
+
+/* ***************************************************************************** */
+/* *********************************** STATS *********************************** */
+/* ***************************************************************************** */
+
+const _statsContainer = document.querySelector('#stats')
+
+let dataStats = {
+    boost : {
+        ammunition : 0,
+        rapidfire : 0,
+        shield : 0,
+    },
+    bossPV : [],
+    bossApparition : [],
+    nbEnnemyGrid: [],
+}
+
+function moyenne(tab) {
+    let moyenne = 0
+    for(let i=0; i<tab.length; i++) {
+        moyenne+=tab[i]
+    }
+
+    return moyenne/tab.length
+}
+
+function ecartMoyen(tab) {
+    let moyenne = 0
+    for(let i=0; i<tab.length; i++) {
+        moyenne+=tab[i]
+    }
+    moyenne = moyenne/tab.length
+
+    let sum = 0
+    for(let i=0; i<tab.length; i++) {
+        sum += Math.abs(tab[i]-moyenne)
+    }
+    return sum/tab.length
+}
+
+function ecartType(tab) {
+    let moyenne = 0
+    for(let i=0; i<tab.length; i++) {
+        moyenne+=tab[i]
+    }
+    moyenne = moyenne/tab.length
+
+    let sum = 0
+    for(let i=0; i<tab.length; i++) {
+        sum += Math.pow(Math.abs(tab[i]-moyenne),2)
+    }
+    return Math.sqrt(sum/tab.length)
+}
+
+function showStats() {
+    let div = _statsContainer.querySelector(`#statsDetails > div:nth-child(2)`)
+    div.querySelector(' #moyenne').innerHTML = moyenne(dataStats.nbEnnemyGrid)
+    div.querySelector(' #ecartMoyen').innerHTML = ecartMoyen(dataStats.nbEnnemyGrid)
+    div.querySelector(' #ecartType').innerHTML = ecartType(dataStats.nbEnnemyGrid)
+
+    if (dataStats.bossPV.length != 0) {
+        
+        div = _statsContainer.querySelector(`#statsDetails > div:nth-child(3)`)
+        div.querySelector(' #moyenne').innerHTML = moyenne(dataStats.bossPV)
+        div.querySelector(' #ecartMoyen').innerHTML = ecartMoyen(dataStats.bossPV)
+        div.querySelector(' #ecartType').innerHTML = ecartType(dataStats.bossPV)
+
+        div = _statsContainer.querySelector(`#statsDetails > div:nth-child(4)`)
+        div.querySelector(' #moyenne').innerHTML = moyenne(dataStats.bossApparition)
+        div.querySelector(' #ecartMoyen').innerHTML = ecartMoyen(dataStats.bossApparition)
+        div.querySelector(' #ecartType').innerHTML = ecartType(dataStats.bossApparition)
+    }
+}
+
+/* ***************************************************************************** */
+/* ***************************************************************************** */
+/* ***************************************************************************** */
+
+
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
@@ -116,11 +196,27 @@ function calculate(){
     return projectiles.length + grids.length+ invaderProjectiles.length+ bossProjectiles.length + particles.length + boosts.length
 }
 
+let reqAnim;
+
+function stopAnimation() {
+    window.cancelAnimationFrame(reqAnim);
+}
 
 const animate = () => {
+    if(game.over) {
+        canvas.style.display = 'none';
+        _statsContainer.style.display = 'flex';
+
+        showStats()
+        console.log(dataStats)
+        
+        stopAnimation()
+        return
+    }
+
     console.log(calculate())
     if (!game.active) return
-    requestAnimationFrame(animate)
+    reqAnim = window.requestAnimationFrame(animate)
     c.fillStyle = backgroundColor
     c.fillRect(0, 0, canvas.width, canvas.height)
     player.update()
@@ -173,15 +269,15 @@ const animate = () => {
             
             if(!player.shield){
                 
-                // setTimeout(() => {
-                //     invaderProjectiles.splice(index, 1)
-                //     player.opacity = 0
-                //     game.over = true
-                // }, 0)
+                setTimeout(() => {
+                    invaderProjectiles.splice(index, 1)
+                    player.opacity = 0
+                    game.over = true
+                }, 0)
 
-                // setTimeout(() => {
-                //     game.active = false
-                // }, 2000)
+                setTimeout(() => {
+                    game.active = false
+                }, 2000)
                 
                 createParticles({
                     object: player,
@@ -241,9 +337,9 @@ const animate = () => {
     grids.forEach((grid, gridIndex) => {
         grid.update()
         if (frame % 100 === 0 && grid.invaders.length > 0) {
-            // grid.invaders[
-            //     Math.floor(Math.random() * grid.invaders.length)
-            // ].shoot(invaderProjectiles)
+            grid.invaders[
+                Math.floor(Math.random() * grid.invaders.length)
+            ].shoot(invaderProjectiles)
         }
         grid.invaders.forEach((invader, i) => {
             invader.update({ velocity: grid.velocity })
@@ -428,6 +524,8 @@ const animate = () => {
     if (frameWave % randomInterval === 0 && !bossPhase) {
         grids.push(new Grid(c, canvas, paramsNbEnemy))
         randomInterval = Math.floor(Math.random() * 500) + 1000
+
+        dataStats.nbEnnemyGrid.push(grids[grids.length-1].numberEnnemy)
     }
 
     //giving bullets
@@ -449,11 +547,14 @@ const animate = () => {
         console.log('C\'EST CENSE ETRE LE BOSS')
         annonceBoss()
     }
-
     if(bossPhase && grids.length == 0 && bossActive == false) {
+
         boss = new Boss(c, canvas, paramsBinomiale)
-        
-        console.log('LE BOSSS')
+
+        // console.log('LE BOSSS')
+        dataStats.bossPV.push(boss.pv)
+        dataStats.bossApparition.push(timeApparitionBoss)
+
         bossActive = true
     }
 
@@ -542,8 +643,13 @@ const createParticles = ({ object, color, fades }) => {
 }
 
 const createRandomEffect = () => {
+
     let random = sumRand(paramsBoost)
     boosts.push(new Boost(c, canvas,player, boostEffect[random].src, boostEffect[random].effect, paramsBoost ))
+
+
+    dataStats.boost[boostEffect[random].name]++
+
 }
 
 const shoot = ()=>{

@@ -18,8 +18,10 @@ class Boss {
         }
 
 
+
         this.pv = loiBinomiale(n,p)
         // console.log('PV : ',this.pv)
+
 
     }
 
