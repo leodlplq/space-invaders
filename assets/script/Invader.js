@@ -75,7 +75,7 @@ class Grid {
             x: loiUniformeAB(0, (this.canvas.width - this.width)),
             y: 0,
         }
-        console.log(this.position.x)
+        // console.log(this.position.x)
 
         this.velocity = {
             x: 3,

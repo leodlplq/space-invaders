@@ -79,10 +79,13 @@ const createStarsBackground = () => {
     }
 }
 
-
+function calculate(){
+    return projectiles.length + grids.length+ invaderProjectiles.length+ bossProjectiles.length + particles.length + boosts.length
+}
 
 
 const animate = () => {
+    console.log(calculate())
     if (!game.active) return
     requestAnimationFrame(animate)
     c.fillStyle = backgroundColor
@@ -158,20 +161,6 @@ const animate = () => {
                 player.shield = false
             }
             
-            // setTimeout(() => {
-            //     invaderProjectiles.splice(index, 1)
-            //     player.opacity = 0
-            //     game.over = true
-            // }, 0)
-
-            // setTimeout(() => {
-            //     game.active = false
-            // }, 2000)
-            createParticles({
-                object: player,
-                color: 'white',
-                fades: true,
-            })
         }
     })
 
@@ -370,6 +359,7 @@ const animate = () => {
                         createParticles({
                             object: boss,
                             fades: true,
+                            color:'red'
                         })
                         projectiles.splice(j, 1)
 
