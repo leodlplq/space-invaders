@@ -23,7 +23,7 @@ canvas {
     font-size: 14px;
 }
 
-.ammunitionDisplay{
+.ammunitionDisplay {
     position: fixed;
     top: 40px;
     left: 20px;
@@ -32,64 +32,62 @@ canvas {
     font-size: 14px;
 }
 
-
 /* MENU PART */
 
-.game{
+.game {
     display: none;
-    
 }
 
-.menu{
+.menu {
     width: 100%;
     height: 100vh;
     background-color: rgb(0, 0, 0);
     color: white;
 }
 
-.main-menu{
+.main-menu {
     width: 100%;
     height: 100%;
-    background-image: url("../images/terre.png");
+    background-image: url('../images/terre.png');
     background-repeat: no-repeat;
-    background-position: center 400px;
-    display: none;
+    background-position: center bottom;
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 100px;
 }
 
-.title{
+.title {
     text-align: center;
 }
 
-button.btn-menu{
+button.btn-menu {
     padding: 10px 20px;
     background-color: rgb(18, 103, 229);
     border: none;
     color: white;
-    transition:background-color ease 0.5s;
+    transition: background-color ease 0.5s;
 }
 
-button.btn-menu:hover{
+button.btn-menu:hover {
     background-color: rgb(16, 79, 175);
 }
 
-.btn-container{
+.btn-container {
     display: flex;
     gap: 20px;
 }
 
-.params-menu{
+.params-menu {
     width: 100%;
     height: 100%;
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
-.params-elements{
+.params-elements {
     height: 80%;
     width: 80%;
     padding: 10px;
@@ -99,13 +97,13 @@ button.btn-menu:hover{
     gap: 20px;
 }
 
-.params-el{
+.params-el {
     background-color: rgb(34, 34, 34);
-    padding:10px;
+    padding: 10px;
     border-radius: 12px;
 }
 
-.ranges{
+.ranges {
     padding: 20px 0;
 }
 
@@ -140,20 +138,19 @@ button.btn-menu:hover{
 }
 #stats a {
     color: #fff;
-    background-color: rgb(18,103,229);
+    background-color: rgb(18, 103, 229);
     text-decoration: none;
-    transition: .2s ease;
+    transition: 0.2s ease;
     padding: 10px 24px;
 }
 #stats a:hover {
-    background-color: rgb(16,79,175);
+    background-color: rgb(16, 79, 175);
 }
 
 #stats > div > div {
-    background-color: rgba(34,34,34);
+    background-color: rgba(34, 34, 34);
     border-radius: 12px;
     margin: 16px;
     padding: 16px 24px;
     flex: 40%;
 }
-
