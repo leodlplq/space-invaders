@@ -19,7 +19,6 @@ class Boss {
 
 
         this.pv = loiBinomiale(400,200/400)
-        // console.log('PV : ',this.pv)
 
     }
 
