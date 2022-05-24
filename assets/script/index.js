@@ -51,7 +51,7 @@ let score = 0
 
 let frameWave = 0
 let timeApparitionBoss = createTimeBoss()
-console.log('TIME BOSS : ', timeApparitionBoss)
+// console.log('TIME BOSS : ', timeApparitionBoss)
 let bossPhase = false
 let bossActive = false
 let backgroundColor = 'black'
@@ -79,16 +79,19 @@ const createStarsBackground = () => {
     }
 }
 
-
+function calculate(){
+    return projectiles.length + grids.length+ invaderProjectiles.length+ bossProjectiles.length + particles.length + boosts.length
+}
 
 
 const animate = () => {
+    console.log(calculate())
     if (!game.active) return
     requestAnimationFrame(animate)
     c.fillStyle = backgroundColor
     c.fillRect(0, 0, canvas.width, canvas.height)
     player.update()
-    console.log(invaderProjectiles)
+    // console.log(invaderProjectiles)
 
     _ammunition.innerHTML = player.ammunition
     particles.forEach((particle, index) => {
@@ -129,7 +132,7 @@ const animate = () => {
             invaderProjectile.position.x <= player.width + player.position.x
         ) {
 
-            console.log('hit')
+            // console.log('hit')
 
             setTimeout(() => {
                 invaderProjectiles.splice(index, 1)
@@ -158,20 +161,6 @@ const animate = () => {
                 player.shield = false
             }
             
-            // setTimeout(() => {
-            //     invaderProjectiles.splice(index, 1)
-            //     player.opacity = 0
-            //     game.over = true
-            // }, 0)
-
-            // setTimeout(() => {
-            //     game.active = false
-            // }, 2000)
-            createParticles({
-                object: player,
-                color: 'white',
-                fades: true,
-            })
         }
     })
 
@@ -339,7 +328,7 @@ const animate = () => {
             }
             if(boss.image.src != window.location.origin+'/assets/images/invader-boss-angry.png') {
                 boss.image.src  = './assets/images/invader-boss-angry.png'
-                console.log('change IMG', boss.image.src)
+                // console.log('change IMG', boss.image.src)
             }
         }
         
@@ -368,12 +357,13 @@ const animate = () => {
                         createParticles({
                             object: boss,
                             fades: true,
+                            color:'red'
                         })
                         projectiles.splice(j, 1)
 
                         //remove boss pv 
                         boss.pv -= 1
-                        console.log(boss.pv)
+                        // console.log(boss.pv)
                         if(boss.pv == 0){
                             score += 2000
                             InitNewWave()
@@ -419,13 +409,13 @@ const animate = () => {
     //spawning Boss
     if (frameWave % timeApparitionBoss === 0 && frameWave!=0 && !bossPhase) {
         bossPhase = true;
-        console.log('C\'EST CENSE ETRE LE BOSS')
+        // console.log('C\'EST CENSE ETRE LE BOSS')
         annonceBoss()
     }
 
     if(bossPhase && grids.length == 0 && bossActive == false) {
         boss = new Boss(c, canvas)
-        console.log('LE BOSSS')
+        // console.log('LE BOSSS')
         bossActive = true
     }
 
@@ -543,7 +533,7 @@ function InitNewWave() {
     bossPhase = false
     bossActive = false
     timeApparitionBoss = createTimeBoss()
-    console.log('TIME BOSS : ', timeApparitionBoss)
+    // console.log('TIME BOSS : ', timeApparitionBoss)
     backgroundColor = 'black'
 }
 

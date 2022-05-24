@@ -71,7 +71,7 @@ export default class Player {
 
     rapidFireFunction(){
         if(this.rapidFire){
-            console.log(this.nbRapidShot)
+            // console.log(this.nbRapidShot)
             if(this.nbRapidShot > 500){
                 this.rapidFire = false
                 this.nbRapidShot = 0

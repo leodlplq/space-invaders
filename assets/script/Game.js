@@ -22,7 +22,7 @@ export default class Game{
     }
 
     draw(){
-        console.log("dessine")
+        // console.log("dessine")
         // var gradient = this.ctx.createLinearGradient(0, 0, this.width, 0);
         // gradient.addColorStop(0, 'green');
         // gradient.addColorStop(1, 'red');
