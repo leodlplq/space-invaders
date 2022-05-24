@@ -2,7 +2,7 @@ import { InvaderProjectile } from './Projectile.js'
 import { loiBinomiale, loiRademacher } from './tools/random.js'
 
 class Boss {
-    constructor(ctx, canvas) {
+    constructor(ctx, canvas, {n,p}) {
         this.ctx = ctx
         const image = new Image()
         image.src = './assets/images/invader-boss.png'
@@ -18,7 +18,7 @@ class Boss {
         }
 
 
-        this.pv = loiBinomiale(400,200/400)
+        this.pv = loiBinomiale(n,p)
         // console.log('PV : ',this.pv)
 
     }

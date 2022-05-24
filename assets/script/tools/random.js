@@ -51,7 +51,7 @@ function sumRand(tab){
       return indexP-1;
 }
 
-//loi binomiale de paramètres n un entier naturel 0 non compris et p compris entre [0,1]
+//loi binomiale de paramètres n un entier naturel, 0 non compris et p compris entre [0,1]
 //renvoit le nombre de fois où la probabilité p se réalise, sur n tirages
 function loiBinomiale(n,p){
       let cardinal = 0
@@ -147,7 +147,7 @@ function loiBeta(n,m) {
       return Z1/(Z1+Z2)
 }
 
-//loi beta de parametre n et m, centrée sur b, étandu sur a
+//loi beta de parametre n et m, centrée sur b, étndu sur a
 function loiBetaDecentree(n,m,a,b) {
       return a * loiBeta(n,m) + (b - a/2)
 }

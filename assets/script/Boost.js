@@ -1,7 +1,7 @@
 import { loiUniformeAB, loiBetaDecentree, loiExponentielle } from "./tools/random.js"
 
 export default class Boost{
-    constructor(ctx, canvas,player, imageSrc, effect) {
+    constructor(ctx, canvas,player, imageSrc, effect, {lambda, min}) {
         this.ctx = ctx
         this.position = {
             x: loiBetaDecentree(2,2, canvas.width-300 , canvas.width/2),
