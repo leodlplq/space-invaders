@@ -3,6 +3,7 @@ import {pileOuFace, loiBernouilli, loiRademacher, dice, diceBetween, sumRand, lo
 /* --------------- */
 /* --- RANDOMS --- */
 /* --------------- */
+// for(let i=0; i<100; i++)console.log(sumRand([1,2,4]))
 // for(let i=0; i<10; i++)console.log(loiExponentielle(0.2))
 // for(let i=0; i<10; i++)console.log(pileOuFace(0.5))
 // for(let i=0; i<10; i++)console.log(loiBernouilli(0.1))

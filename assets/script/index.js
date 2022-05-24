@@ -1,7 +1,9 @@
 import { Invader, Grid } from './Invader.js'
+import { Boss } from './Boss.js'
 import Particle from './Particle.js'
 import Player from './Player.js'
 import { Projectile, InvaderProjectile } from './Projectile.js'
+import {loiGaussienneDecentree} from './tools/random.js'
 
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
@@ -20,6 +22,8 @@ const player = new Player(c, canvas)
 const projectiles = []
 const grids = []
 const invaderProjectiles = []
+let boss
+const bossProjectiles = []
 const particles = []
 const speed = 5
 const keys = {
@@ -38,6 +42,13 @@ const keys = {
 let frame = 0
 let randomInterval = Math.floor(Math.random() * 500) + 500
 let score = 0
+
+let frameWave = 0
+let timeApparitionBoss = createTimeBoss()
+console.log('TIME BOSS : ', timeApparitionBoss)
+let bossPhase = false
+let bossActive = false
+let backgroundColor = 'black'
 
 //SPACE BACKGROUND CREATE WITH PARTICLES
 const createStarsBackground = () => {
@@ -66,7 +77,7 @@ const createStarsBackground = () => {
 const animate = () => {
     if (!game.active) return
     requestAnimationFrame(animate)
-    c.fillStyle = 'black'
+    c.fillStyle = backgroundColor
     c.fillRect(0, 0, canvas.width, canvas.height)
     player.update()
 
@@ -117,6 +128,35 @@ const animate = () => {
             // setTimeout(() => {
             //     game.active = false
             // }, 2000)
+            createParticles({
+                object: player,
+                color: 'white',
+                fades: true,
+            })
+        }
+    })
+
+    //Boss Projectiles
+    bossProjectiles.forEach((bossProjectile, index) => {
+        if (
+            bossProjectile.position.y + bossProjectile.height >=
+            canvas.height
+        ) {
+            setTimeout(() => {
+                bossProjectiles.splice(index, 1)
+            }, 0)
+        } else {
+            bossProjectile.update()
+        }
+
+        //projectile hits player
+        if (
+            bossProjectile.position.y + bossProjectile.height >=
+                player.position.y &&
+            bossProjectile.position.x + bossProjectile.width >=
+                player.position.x &&
+            bossProjectile.position.x <= player.width + player.position.x
+        ) {
             createParticles({
                 object: player,
                 color: 'white',
@@ -198,6 +238,68 @@ const animate = () => {
         })
     })
 
+    //DISPLAY BOSS
+    if(boss){
+        boss.update()
+        if(boss.pv>20){
+            if (frame % 100 === 0) {
+                boss.shoot(invaderProjectiles, player)
+            }
+        }
+        else{
+            if (frame % 40 === 0) {
+                boss.shoot(invaderProjectiles, player)
+            }
+            if(frame % 10 === 0) {
+                backgroundColor = backgroundColor == 'black' ? 'rgb(82, 24, 17)' : 'black'
+            }
+            if(boss.image.src != window.location.origin+'/assets/images/invader-boss-angry.png') {
+                boss.image.src  = './assets/images/invader-boss-angry.png'
+                console.log('change IMG', boss.image.src)
+            }
+        }
+        
+        //projectile hit boss
+        projectiles.forEach((projectile, j) => {
+            if (
+                projectile.position.y - projectile.radius <=
+                    boss.position.y + boss.height &&
+                projectile.position.x + projectile.radius >=
+                    boss.position.x &&
+                projectile.position.x - projectile.radius <=
+                    boss.position.x + boss.width &&
+                projectile.position.y + projectile.radius >=
+                    boss.position.y
+            ) {
+                setTimeout(() => {
+                    const projectileFound = projectiles.find(
+                        (projectile2) => projectile2 === projectile
+                    )
+
+                    //remove invader and projectile
+                    if (projectileFound) {
+                        score += 100
+                        _score.innerHTML = score
+                        createParticles({
+                            object: boss,
+                            fades: true,
+                        })
+                        projectiles.splice(j, 1)
+
+                        //remove boss pv 
+                        boss.pv -= 1
+                        console.log(boss.pv)
+                        if(boss.pv == 0){
+                            score += 2000
+                            InitNewWave()
+                        }
+                    }
+                }, 0)
+            }
+        })
+    }
+
+
     //PLAYER'S MOVEMENT
     if (keys.q.pressed && player.position.x >= 0) {
         player.velocity.x = -speed
@@ -214,13 +316,26 @@ const animate = () => {
     }
 
     //spawing ennemies
-    if (frame % randomInterval === 0) {
+    if (frameWave % randomInterval === 0 && !bossPhase) {
         grids.push(new Grid(c, canvas))
         randomInterval = Math.floor(Math.random() * 500) + 500
     }
 
-    //spawn projectiles
+    //spawning Boss
+    if (frameWave % timeApparitionBoss === 0 && frameWave!=0 && !bossPhase) {
+        bossPhase = true;
+        console.log('C\'EST CENSE ETRE LE BOSS')
+        annonceBoss()
+    }
+
+    if(bossPhase && grids.length == 0 && bossActive == false) {
+        boss = new Boss(c, canvas)
+        console.log('LE BOSSS')
+        bossActive = true
+    }
+
     frame++
+    frameWave++
 }
 
 createStarsBackground()
@@ -229,7 +344,7 @@ animate()
 
 //EVENT LISTENER FOR KEYDOWN (PLAYER MOVEMENTS + SHOOTING)
 addEventListener('keydown', ({ key }) => {
-    console.log(game.over)
+    // console.log(game.over)
     if (!game.over) {
         switch (key) {
             case 'q':
@@ -304,3 +419,24 @@ const createParticles = ({ object, color, fades }) => {
 }
 
 
+/* ------ INTERMEDIATE FUNCTIONS ------ */
+
+function createTimeBoss() {
+    return Math.round(loiGaussienneDecentree(300,2000, 1500, 2500))
+    // return Math.round(loiGaussienneDecentree(10,200, 100, 300))
+}
+
+function InitNewWave() {
+    frameWave = 0
+    boss = undefined
+    bossPhase = false
+    bossActive = false
+    timeApparitionBoss = createTimeBoss()
+    console.log('TIME BOSS : ', timeApparitionBoss)
+    backgroundColor = 'black'
+}
+
+function annonceBoss() {
+    backgroundColor = 'rgb(82, 24, 17)'
+    setTimeout(() => {backgroundColor = 'black'}, 1000);
+}

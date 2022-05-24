@@ -29,6 +29,7 @@ function diceBetween(min, max) {
 
 //fonction qui prend n un nombre >=2 fixé et p1,...,pn nombres positifs strictement tels que p1+p2+...+pn=1
 //prend un tableau de nombres en paramètre, par exemple tab=[2,4,6,8,4,2,3,6,5,1,5,4,3]
+//renvoit l'index choisi
 function sumRand(tab){
 
       let total = tab.reduce((acc, cur)=>{
@@ -38,7 +39,7 @@ function sumRand(tab){
       let tabDiv = tab.map(el=>el/total);
 
 
-      const w = Math.random()
+      const w = loiUniforme01()
 
       let totalP = 0;
       let indexP = 0;

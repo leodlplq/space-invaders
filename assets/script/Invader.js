@@ -1,5 +1,5 @@
 import { InvaderProjectile } from './Projectile.js'
-import { diceBetween } from './tools/random.js'
+import { diceBetween, loiUniformeAB } from './tools/random.js'
 
 class Invader {
     constructor(ctx, canvas, { position }) {
@@ -13,7 +13,7 @@ class Invader {
         const image = new Image()
         image.src = './assets/images/invader.png'
         image.onload = () => {
-            const scale = 1
+            const scale = 0.45
             this.image = image
             this.width = image.width * scale
             this.height = image.height * scale
@@ -25,8 +25,6 @@ class Invader {
     }
 
     draw() {
-        // this.ctx.fillStyle = 'red'
-        // this.ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
         this.ctx.drawImage(
             this.image,
             this.position.x,
@@ -74,7 +72,7 @@ class Grid {
 
         //Random grid starting position
         this.position = {
-            x: Math.random() * (this.canvas.width - this.width),
+            x: loiUniformeAB(0, (this.canvas.width - this.width)),
             y: 0,
         }
         console.log(this.position.x)
