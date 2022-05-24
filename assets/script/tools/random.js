@@ -19,12 +19,17 @@ function loiRademacher(p){
 }
 
 //dé équilibré
-function de(nbFace){
+function dice(nbFace){
       return Math.ceil(Math.random()*nbFace)
+}
+
+function diceBetween(min, max) {
+      return dice(max-min)+min
 }
 
 //fonction qui prend n un nombre >=2 fixé et p1,...,pn nombres positifs strictement tels que p1+p2+...+pn=1
 //prend un tableau de nombres en paramètre, par exemple tab=[2,4,6,8,4,2,3,6,5,1,5,4,3]
+//renvoit l'index choisi
 function sumRand(tab){
 
       let total = tab.reduce((acc, cur)=>{
@@ -34,7 +39,7 @@ function sumRand(tab){
       let tabDiv = tab.map(el=>el/total);
 
 
-      const w = Math.random()
+      const w = loiUniforme01()
 
       let totalP = 0;
       let indexP = 0;
@@ -75,7 +80,7 @@ function loiGeometrique(p){
 }
 
 //loi de Poisson de paramètre lambda>0, pour les évènements rares. n le nombre d'événements (nombre de vols d'avions dans l'année), p la probabilité de l'événement entre 0 et 1 (probabilité de s'écraser)
-//renvoit la probabilité que la probabilités se produise k fois (le nombre k d'accidents d'avion)
+//renvoit la probabilité que la probabilité se produise k fois (le nombre k d'accidents d'avion)
 function loiPoisson(n, p, k){
       let lambda = n*p
       if(lambda<=0) throw new Error('Loi de Poisson : le paramètre lambda doit strictement supérieur à 0')
@@ -85,21 +90,41 @@ function loiPoisson(n, p, k){
       return Math.exp(-lambda)*(Math.pow(lambda, k)/factorial(k))
 }
 
-//loi uniforme sur [0,1], renvoit 1 si la variable aléatoire est entre 0 et 1, sinon renvoit 0
-function loiUniforme01(min, max){
-      let random = Math.floor(Math.random() * (max - min + 1)) + min
-      return (random >=0 && random <=1) ? 1 : 0
+//loi uniforme sur [0,1], renvoit un nombre aléatoire entre 0 et 1
+function loiUniforme01(){
+      return Math.random()
 }
 
-//loi uniforme sur [a,b], b>a, renvoit 1/(b-a) si la variable aléatoire est entre a et b, sinon renvoit 0
-function loiUniformeAB(a,b, min, max){
+//loi uniforme sur [a,b], b>a
+function loiUniformeAB(a,b){
       if(b<=a) {
             throw new Error('loi uniforme sur [a,b] : b doit être strictement supérieur à a')
       }
       else {
-            let random = Math.floor(Math.random() * (max - min + 1)) + min
-            return (random >=a && random <=b) ? 1/(b-a) : 0
+            return Math.random() * (b-a) + a
       }
+}
+
+//Gaussienne centrée sur 0
+function loiGaussienne() {
+      let teta = 2 * Math.PI * loiUniforme01()
+      let R = Math.sqrt(-2*Math.log(loiUniforme01()))
+
+      return R*Math.cos(teta)
+}
+
+// loi gaussienne étendu sur a, de moyenne b, et qui met le min ou max si le chiffre est en dehors de [min,max]
+function loiGaussienneDecentree(a,b, min, max) {
+      let random = a * loiGaussienne() + b
+
+      if(random < min ) {
+            random = min
+      }
+      if(random > max ) {
+            random = max
+      }
+
+      return random
 }
 
 //loi exponentielle sans vieillissement, de paramètre têta supérieur à 0
@@ -112,5 +137,22 @@ function loiExponentielle(teta){
       }
 }
 
+//loi Bêta centrée sur [0,1]
+function loiBeta(n,m) {
+      let Z1 = 0;
+      let Z2 = 0;
+      for(let i=0; i<n; i++) Z1+=loiExponentielle(1)
+      for(let i=0; i<m; i++) Z2+=loiExponentielle(1)
 
-export {pileOuFace, loiBernouilli, loiRademacher, de, sumRand, loiBinomiale, loiGeometrique, loiPoisson, loiUniforme01, loiUniformeAB, loiExponentielle}
+      return Z1/(Z1+Z2)
+}
+
+//loi beta de parametre n et m, centrée sur b, étandu sur a
+function loiBetaDecentree(n,m,a,b) {
+      return a * loiBeta(n,m) + (b - a/2)
+}
+
+/* ********************************************** */
+/* ********************************************** */
+
+export {pileOuFace, loiBernouilli, loiRademacher, dice, diceBetween, sumRand, loiBinomiale, loiGeometrique, loiPoisson, loiUniforme01, loiUniformeAB, loiGaussienne, loiGaussienneDecentree, loiExponentielle, loiBeta, loiBetaDecentree}
