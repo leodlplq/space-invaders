@@ -314,7 +314,7 @@ const animate = () => {
     //DISPLAY BOSS
     if(boss){
         boss.update()
-        if(boss.pv>20){
+        if(boss.pv>80){
             if (frame % 100 === 0) {
                 boss.shoot(invaderProjectiles, player)
             }
@@ -333,8 +333,10 @@ const animate = () => {
         }
         
         //projectile hit boss
+        // console.log(boss)
         projectiles.forEach((projectile, j) => {
             if (
+                boss && 
                 projectile.position.y - projectile.radius <=
                     boss.position.y + boss.height &&
                 projectile.position.x + projectile.radius >=

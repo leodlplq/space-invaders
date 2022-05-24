@@ -17,8 +17,10 @@ class Boss {
             }
         }
 
+
         this.pv = loiBinomiale(100,50/100)
         // console.log('PV : ',this.pv)
+
     }
 
     draw() {
