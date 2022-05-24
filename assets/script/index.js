@@ -3,12 +3,15 @@ import { Boss } from './Boss.js'
 import Particle from './Particle.js'
 import Player from './Player.js'
 import { Projectile, InvaderProjectile } from './Projectile.js'
+import Boost from './Boost.js'
+import { boostEffect } from './options/boostEffects.js'
 import {loiGaussienneDecentree} from './tools/random.js'
 
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
 const _score = document.querySelector('#score')
+const _ammunition = document.querySelector("#ammunition")
 
 canvas.width = innerWidth
 canvas.height = innerHeight
@@ -18,6 +21,7 @@ let game = {
     active: true,
 }
 
+
 const player = new Player(c, canvas)
 const projectiles = []
 const grids = []
@@ -25,6 +29,7 @@ const invaderProjectiles = []
 let boss
 const bossProjectiles = []
 const particles = []
+const boosts= []
 const speed = 5
 const keys = {
     q: {
@@ -40,7 +45,8 @@ const keys = {
 
 
 let frame = 0
-let randomInterval = Math.floor(Math.random() * 500) + 500
+let randomInterval = Math.floor(Math.random() * 500) + 1000
+let randomIntervalBullet = Math.floor(Math.random() * 500) + 200
 let score = 0
 
 let frameWave = 0
@@ -74,14 +80,17 @@ const createStarsBackground = () => {
 }
 
 
+
+
 const animate = () => {
     if (!game.active) return
     requestAnimationFrame(animate)
     c.fillStyle = backgroundColor
     c.fillRect(0, 0, canvas.width, canvas.height)
     player.update()
+    console.log(invaderProjectiles)
 
-    
+    _ammunition.innerHTML = player.ammunition
     particles.forEach((particle, index) => {
         //PUT STAR BACKGROUND PARTICLES BACK TO TOP WHEN OUT OF SCREEN
         if (particle.position.y - particle.radius >= canvas.height) {
@@ -119,6 +128,36 @@ const animate = () => {
                 player.position.x &&
             invaderProjectile.position.x <= player.width + player.position.x
         ) {
+
+            console.log('hit')
+
+            setTimeout(() => {
+                invaderProjectiles.splice(index, 1)
+            }, 0)
+            
+            if(!player.shield){
+                
+                // setTimeout(() => {
+                //     invaderProjectiles.splice(index, 1)
+                //     player.opacity = 0
+                //     game.over = true
+                // }, 0)
+
+                // setTimeout(() => {
+                //     game.active = false
+                // }, 2000)
+                
+                createParticles({
+                    object: player,
+                    color: 'white',
+                    fades: true,
+                })
+
+                
+            } else{
+                player.shield = false
+            }
+            
             // setTimeout(() => {
             //     invaderProjectiles.splice(index, 1)
             //     player.opacity = 0
@@ -180,9 +219,9 @@ const animate = () => {
     grids.forEach((grid, gridIndex) => {
         grid.update()
         if (frame % 100 === 0 && grid.invaders.length > 0) {
-            grid.invaders[
-                Math.floor(Math.random() * grid.invaders.length)
-            ].shoot(invaderProjectiles)
+            // grid.invaders[
+            //     Math.floor(Math.random() * grid.invaders.length)
+            // ].shoot(invaderProjectiles)
         }
         grid.invaders.forEach((invader, i) => {
             invader.update({ velocity: grid.velocity })
@@ -238,6 +277,51 @@ const animate = () => {
         })
     })
 
+
+    //DISPLAY BOOST
+    boosts.forEach((boost,boostIndex)=>{
+        boost.update()
+        projectiles.forEach((projectile, j) => {
+            if (
+                projectile.position.y - projectile.radius <=
+                    boost.position.y + boost.height &&
+                projectile.position.x + projectile.radius >=
+                    boost.position.x &&
+                projectile.position.x - projectile.radius <=
+                    boost.position.x + boost.width &&
+                projectile.position.y + projectile.radius >=
+                    boost.position.y
+            ) {
+              
+              setTimeout(() => {
+                    const boostFound = boosts.find(
+                        (boost2) => boost2 === boost
+                    )
+                    const projectileFound = projectiles.find(
+                        (projectile2) => projectile2 === projectile
+                    )
+
+                    //remove invader and projectile
+                    if (boostFound && projectileFound) {
+                        projectiles.splice(j, 1)
+                        boost.effect()
+                        boosts.splice(boostIndex, 1)
+                    }
+                }, 0)
+            }
+        })
+       if(boost.lifetime > 300){
+            boosts.splice(boostIndex, 1)
+        }
+    })
+  
+   //RAPID FIRE
+    if(player.rapidFire){
+        shoot()
+        player.nbRapidShot++
+        player.rapidFireFunction()
+    }
+
     //DISPLAY BOSS
     if(boss){
         boss.update()
@@ -272,6 +356,7 @@ const animate = () => {
                     boss.position.y
             ) {
                 setTimeout(() => {
+
                     const projectileFound = projectiles.find(
                         (projectile2) => projectile2 === projectile
                     )
@@ -299,7 +384,6 @@ const animate = () => {
         })
     }
 
-
     //PLAYER'S MOVEMENT
     if (keys.q.pressed && player.position.x >= 0) {
         player.velocity.x = -speed
@@ -318,7 +402,18 @@ const animate = () => {
     //spawing ennemies
     if (frameWave % randomInterval === 0 && !bossPhase) {
         grids.push(new Grid(c, canvas))
-        randomInterval = Math.floor(Math.random() * 500) + 500
+        randomInterval = Math.floor(Math.random() * 500) + 1000
+    }
+
+    //giving bullets
+    if(frame % randomIntervalBullet === 0){
+        player.ammunition += Math.floor(Math.random() * 20) + 10 
+        randomIntervalBullet = Math.floor(Math.random() * 500) + 200
+    }
+
+    //spawning boost
+    if(frame % 500 === 0 && frame != 0){
+        createRandomEffect()
     }
 
     //spawning Boss
@@ -344,7 +439,6 @@ animate()
 
 //EVENT LISTENER FOR KEYDOWN (PLAYER MOVEMENTS + SHOOTING)
 addEventListener('keydown', ({ key }) => {
-    // console.log(game.over)
     if (!game.over) {
         switch (key) {
             case 'q':
@@ -354,21 +448,12 @@ addEventListener('keydown', ({ key }) => {
                 keys.d.pressed = true
                 break
             case ' ':
-                projectiles.push(
-                    new Projectile(
-                        {
-                            position: {
-                                x: player.position.x + player.width / 2,
-                                y: player.position.y,
-                            },
-                            velocity: {
-                                x: 0,
-                                y: -7,
-                            },
-                        },
-                        c
-                    )
-                )
+                if(player.ammunition > 0){
+                    shoot()
+
+                    player.ammunition--
+                }
+                
                 break
 
             default:
@@ -388,6 +473,9 @@ addEventListener('keyup', ({ key }) => {
             break
         case ' ':
             break
+        case "b":
+            createRandomEffect();
+            break;
 
         default:
             break
@@ -416,6 +504,29 @@ const createParticles = ({ object, color, fades }) => {
             )
         )
     }
+}
+
+const createRandomEffect = () => {
+    let random = Math.floor(Math.random() * boostEffect.length)
+    boosts.push(new Boost(c, canvas,player, boostEffect[random].src, boostEffect[random].effect ))
+}
+
+const shoot = ()=>{
+    projectiles.push(
+        new Projectile(
+            {
+                position: {
+                    x: player.position.x + player.width / 2,
+                    y: player.position.y,
+                },
+                velocity: {
+                    x: 0,
+                    y: -7,
+                },
+            },
+            c
+        )
+    )
 }
 
 

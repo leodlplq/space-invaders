@@ -1,7 +1,7 @@
 export default class Player {
     constructor(ctx, canvas) {
         this.ctx = ctx
-
+        
         this.velocity = {
             x: 0,
             y: 0,
@@ -9,6 +9,7 @@ export default class Player {
 
         this.rotation = 0
         this.opacity = 1
+        this.ammunition = 100;
 
         const image = new Image()
         image.src = './assets/images/spaceship.png'
@@ -22,11 +23,18 @@ export default class Player {
                 y: canvas.height - this.height - 50,
             }
         }
+
+        this.rapidFire = false
+        this.nbRapidShot = 0;
+
+        this.shield = false
     }
 
     draw() {
-        // this.ctx.fillStyle = 'red'
-        // this.ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+        if(this.shield){
+            this.ctx.fillStyle = 'red'
+            this.ctx.fillRect(this.position.x, this.position.y, this.width, this.height + 10)
+        }
         this.ctx.save()
         this.ctx.globalAlpha = this.opacity
         this.ctx.translate(
@@ -55,5 +63,20 @@ export default class Player {
             this.draw()
             this.position.x += this.velocity.x
         }
+    }
+
+    addAmunition(nb){
+        this.ammunition += nb
+    }
+
+    rapidFireFunction(){
+        if(this.rapidFire){
+            console.log(this.nbRapidShot)
+            if(this.nbRapidShot > 500){
+                this.rapidFire = false
+                this.nbRapidShot = 0
+            }
+        }
+        
     }
 }
