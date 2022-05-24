@@ -27,7 +27,9 @@ export default class Boost{
         }
         this.player = player
         this.lifetime = 0;
-        this.death = loiExponentielle(0.4)*100
+        let expRandom = loiExponentielle(0.5)*100 + 100
+        this.death = expRandom > 600 ? 600 : expRandom
+        console.log(this.death)
 
         this.effect = effect;
     }
