@@ -5,7 +5,7 @@ import Player from './Player.js'
 import { Projectile, InvaderProjectile } from './Projectile.js'
 import Boost from './Boost.js'
 import { boostEffect } from './options/boostEffects.js'
-import {loiGaussienneDecentree, sumRand, loiBetaDecentree} from './tools/random.js'
+import {loiGaussienneDecentree, sumRand, loiBetaDecentree, loiBinomiale} from './tools/random.js'
 
 
 /* ***************************************************************************** */
@@ -63,23 +63,42 @@ function ecartType(tab) {
 }
 
 function showStats() {
+    //ennemy grid
     let div = _statsContainer.querySelector(`#statsDetails > div:nth-child(2)`)
     div.querySelector(' #moyenne').innerHTML = moyenne(dataStats.nbEnnemyGrid)
     div.querySelector(' #ecartMoyen').innerHTML = ecartMoyen(dataStats.nbEnnemyGrid)
     div.querySelector(' #ecartType').innerHTML = ecartType(dataStats.nbEnnemyGrid)
 
+    //boss
     if (dataStats.bossPV.length != 0) {
-        
-        div = _statsContainer.querySelector(`#statsDetails > div:nth-child(3)`)
+        div = _statsContainer.querySelector(`#statsDetails > div:nth-child(3) .partie-theorie-ctn div:nth-child(1)`)
         div.querySelector(' #moyenne').innerHTML = moyenne(dataStats.bossPV)
         div.querySelector(' #ecartMoyen').innerHTML = ecartMoyen(dataStats.bossPV)
         div.querySelector(' #ecartType').innerHTML = ecartType(dataStats.bossPV)
 
-        div = _statsContainer.querySelector(`#statsDetails > div:nth-child(4)`)
+        div = _statsContainer.querySelector(`#statsDetails > div:nth-child(4) .partie-theorie-ctn div:nth-child(1)`)
         div.querySelector(' #moyenne').innerHTML = moyenne(dataStats.bossApparition)
         div.querySelector(' #ecartMoyen').innerHTML = ecartMoyen(dataStats.bossApparition)
         div.querySelector(' #ecartType').innerHTML = ecartType(dataStats.bossApparition)
     }
+    div = _statsContainer.querySelector(`#statsDetails > div:nth-child(3) .partie-theorie-ctn div:nth-child(2)`)
+    div.querySelector(' #moyenne').innerHTML = paramsBinomiale.n * paramsBinomiale.p
+    div.querySelector(' #ecartType').innerHTML = Math.sqrt(paramsBinomiale.n * paramsBinomiale.p * (1-paramsBinomiale.p))
+
+    div = _statsContainer.querySelector(`#statsDetails > div:nth-child(4) .partie-theorie-ctn div:nth-child(2)`)
+    div.querySelector(' #moyenne').innerHTML = centreApparitionTimeBoss
+    div.querySelector(' #ecartType').innerHTML = etendueApparitionTimeBoss
+
+    //types de boost
+    div = _statsContainer.querySelector(`#statsDetails > div:nth-child(1) .partie-theorie-ctn div:nth-child(1)`)
+    div.querySelector(' #munitions').innerHTML = dataStats.boost.ammunition
+    div.querySelector(' #tirConstant').innerHTML = dataStats.boost.rapidfire
+    div.querySelector(' #bouclier').innerHTML = dataStats.boost.shield
+
+    div = _statsContainer.querySelector(`#statsDetails > div:nth-child(1) .partie-theorie-ctn div:nth-child(2)`)
+    div.querySelector(' #munitions').innerHTML = paramsBoost[0]
+    div.querySelector(' #tirConstant').innerHTML = paramsBoost[1]
+    div.querySelector(' #bouclier').innerHTML = paramsBoost[2]
 }
 
 /* ***************************************************************************** */
@@ -163,6 +182,8 @@ let frameBoost = 0
 let score = 0
 
 let frameWave = 0
+let centreApparitionTimeBoss = 2000
+let etendueApparitionTimeBoss = 300
 let timeApparitionBoss = createTimeBoss()
 // console.log('TIME BOSS : ', timeApparitionBoss)
 let bossPhase = false
@@ -495,7 +516,7 @@ const animate = () => {
                         //remove boss pv 
                         boss.pv -= 1
                         // console.log(boss.pv)
-                        if(boss.pv == 0){
+                        if(boss.pv <= 0){
                             score += 2000
                             InitNewWave()
                         }
@@ -551,7 +572,7 @@ const animate = () => {
 
         boss = new Boss(c, canvas, paramsBinomiale)
 
-        // console.log('LE BOSSS')
+        console.log('LE BOSSS', boss.pv)
         dataStats.bossPV.push(boss.pv)
         dataStats.bossApparition.push(timeApparitionBoss)
 
@@ -674,7 +695,7 @@ const shoot = ()=>{
 /* ------ INTERMEDIATE FUNCTIONS ------ */
 
 function createTimeBoss() {
-    return Math.round(loiGaussienneDecentree(300,2000, 1500, 2500))
+    return Math.round(loiGaussienneDecentree(etendueApparitionTimeBoss,centreApparitionTimeBoss, 1500, 2500))
 }
 
 function getRandomIntervalBoost() {

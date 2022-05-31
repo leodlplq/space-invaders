@@ -122,7 +122,7 @@ button.btn-menu:hover {
 }
 #stats h2 {
     font-size: 1.5rem;
-    margin-top: 16px;
+    margin-top: 8px;
     margin-bottom: 24px;
 }
 #stats p {
@@ -153,4 +153,13 @@ button.btn-menu:hover {
     margin: 16px;
     padding: 16px 24px;
     flex: 40%;
+}
+
+#stats .partie-theorie-ctn {
+    display: flex;
+    width: 100%;
+    
+}
+#stats .partie-theorie-ctn div {
+    flex: 1;
 }
