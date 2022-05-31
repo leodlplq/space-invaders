@@ -464,7 +464,7 @@ const animate = () => {
     //DISPLAY BOSS
     if(boss){
         boss.update()
-        if(boss.pv>80){
+        if(boss.pv> Math.round((boss.initPV / 100)*25)){
             if (frame % 100 === 0) {
                 boss.shoot(invaderProjectiles, player)
             }
@@ -853,11 +853,11 @@ const _binomProbaValue = document.querySelector('#binomProbaValue')
 _binomialeN.addEventListener('input', (e)=>{
     _binomialeNValue.innerHTML = e.target.value
     paramsBinomiale.n = parseInt(e.target.value)
-
+    console.log(paramsBinomiale.n)
 })
 
 _binomProba.addEventListener('input', (e)=>{
     _binomProbaValue.innerHTML = e.target.value
-    paramsBinomiale.p = parseInt(e.target.value)
-    
+    paramsBinomiale.p = parseFloat(e.target.value)
+    console.log(paramsBinomiale.p)
 })

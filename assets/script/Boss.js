@@ -20,6 +20,7 @@ class Boss {
 
 
         this.pv = loiBinomiale(n,p)
+        this.initPV = this.pv
         // console.log('PV : ',this.pv)
 
 
